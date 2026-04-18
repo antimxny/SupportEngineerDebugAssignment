@@ -56,15 +56,11 @@ async function addTask() {
 
   const body = { userId, title };
 
-  const includeHeader = Math.random() > 0.35;
-
-  const headers = { "Content-Type": "application/json" };
-  if (includeHeader) {
-    headers["X-Client-Timestamp"] = new Date().toISOString();
-  } else {
-    headers["X-Client-Timestamp"] = "";
-  }
-
+  const headers = { 
+    "Content-Type": "application/json",
+    "X-Client-Timestamp": new Date().toISOString()
+   };
+  
   const res = await fetch("/api/tasks", {
     method: "POST",
     headers,

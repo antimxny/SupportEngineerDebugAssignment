@@ -38,7 +38,11 @@ public static class TaskEndpoints
                 "CreateTask request UserId={UserId} Title={Title} X-Client-Timestamp present={HasTimestamp} length={Length}",
                 req?.UserId ?? "(null)", req?.Title ?? "(null)", hasTimestamp, clientTimestamp?.Length ?? 0);
 
-            var createdAt = DateTime.Parse(clientTimestamp);
+            DateTime createdAt;
+            if (hasTimestamp && DateTime.TryParse(clientTimestamp, out DateTime parsedDt))
+                createdAt = parsedDt;
+            else
+                return Results.BadRequest(new { message = "Request header X-Client-Timestamp is missing or not a valid date/time. Please contact application support for assistance." });
 
             if (string.IsNullOrWhiteSpace(req.UserId) || string.IsNullOrWhiteSpace(req.Title))
                 return Results.BadRequest(new { message = "userId and title are required" });
