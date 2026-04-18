@@ -30,6 +30,34 @@ public class TaskApiTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task CreateTask_ShouldHandleMissingHeader_XClientTimestamp()
+    {
+        var client = _factory.CreateClient();
+
+        var req = new { userId = "user-001", title = "Missing XClientTimestamp test" };
+
+        client.DefaultRequestHeaders.Add("X-Client-Timestamp", "");
+
+        var res = await client.PostAsJsonAsync("/api/tasks", req);
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task CreateTask_ShouldHandleInvalidHeader_XClientTimestamp()
+    {
+        var client = _factory.CreateClient();
+
+        var req = new { userId = "user-001", title = "Invalid XClientTimestamp test" };
+
+        client.DefaultRequestHeaders.Add("X-Client-Timestamp", "invalid value");
+
+        var res = await client.PostAsJsonAsync("/api/tasks", req);
+
+        res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task ListTasks_ShouldReturnOnlyRequestedUser()
     {
         var client = _factory.CreateClient();
