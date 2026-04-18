@@ -43,6 +43,7 @@ async function refresh() {
 
   const items = await res.json();
 
+  state.tasks = [];
   state.tasks = state.tasks.concat(items)
     .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
 
